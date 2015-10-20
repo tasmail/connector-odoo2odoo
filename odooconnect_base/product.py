@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2010-2014 Elico Corp. All Rights Reserved.
+#    Copyright (c) 2010-2014. All Rights Reserved.
 #    Qing Wang <snowkite@outlook.com>
 #
 #    This program is free software: you can redistribute it and/or modify
