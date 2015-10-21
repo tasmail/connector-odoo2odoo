@@ -76,7 +76,7 @@ class ProductProductAdapter(GenericAdapter):
 
         :rtype: list
         """
-        domain = []
+        domain = kwargs.get('domain', [])
 
         dt_fmt = DEFAULT_SERVER_DATETIME_FORMAT
         if from_date is not None:
@@ -131,6 +131,8 @@ class ProductImportMapper(ImportMapper):
               ('default_code', 'default_code'),
               (normalize_datetime('write_date'), 'write_date'),
               (normalize_datetime('write_date'), 'write_date'),
+              ('type', 'type'),
+              ('ean13', 'ean13')
               ]
 
     @mapping

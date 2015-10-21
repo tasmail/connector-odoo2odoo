@@ -69,7 +69,7 @@ class ResUserAdapter(GenericAdapter):
 
         :rtype: list
         """
-        domain = [('login', '!=', 'admin')]
+        domain = kwargs.get('domain', [])
 
         dt_fmt = DEFAULT_SERVER_DATETIME_FORMAT
         if from_date is not None:
@@ -126,6 +126,23 @@ class ResUserImporter(OdooImporter):
     _model_name = ['odoo.res.users']
 
     _base_mapper = ResUserImportMapper
+
+    def _must_skip(self):
+        """ Hook called right after we read the data from the backend.
+
+        If the method returns a message giving a reason for the
+        skipping, the import will be interrupted and the message
+        recorded in the job (if the import is called directly by the
+        job, not by dependencies).
+
+        If it returns None, the import will continue normally.
+
+        :returns: None | str | unicode
+        """
+        record = self.odoo_record
+        if record.get('login') == 'admin':
+            return "skip to import the admin user"
+        return
 
 
 @job(default_channel='root.odoo')

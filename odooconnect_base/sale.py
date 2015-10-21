@@ -155,12 +155,14 @@ class SaleOrderAdapter(GenericAdapter):
 
         if record.get('order_line', []):
             lines = []
-            for line_id in record.get('order_line'):
-                line_value = self._call(
-                    'sale.order.line', 'read', line_id)
+            for line_id in record.get('order_line', []):
+                line_value = self.read_lines(line_id)
                 lines.append(line_value)
         record.update({'lines': lines})
         return record
+
+    def read_lines(self, line_id):
+        return self._call('sale.order.line', 'read', line_id)
 
 
 @odoo
@@ -226,8 +228,7 @@ class SaleOrderImportMapper(ImportMapper):
         ('payment_term', 'payment_term'),
     ]
 
-    children = [('lines', 'odoo_order_line_ids', 'odoo.sale.order.line'),
-                ]
+    children = [('lines', 'odoo_order_line_ids', 'odoo.sale.order.line')]
 
     @mapping
     def backend_id(self, record):
@@ -282,16 +283,25 @@ class SaleOrderImporter(OdooImporter):
             model='odoo.res.partner')
         importer.run(record['partner_id'][0])
 
+    def _import_sale_person(self):
+        record = self.odoo_record
+        # we always update the sale person when importing an order
+        importer = self.unit_for(OdooImporter, model='odoo.res.users')
+        importer.run(record['user_id'][0])
+
     def _import_dependencies(self):
-        # record = self.odoo_record
+        record = self.odoo_record
 
         self._import_customer()
 
-        # for line in record.get('order_line', []):
-        #     _logger.debug('line: %s', line)
-        #     if 'product_id' in line:
-        #         self._import_dependency(line['product_id'][0],
-        #                                 'odoo.product.product')
+        # import sale person for order
+        self._import_sale_person()
+
+        for line in record.get('lines', []):
+            _logger.debug('line: %s', line)
+            if 'product_id' in line:
+                self._import_dependency(line['product_id'][0],
+                                        'odoo.product.product')
 
 
 @odoo
