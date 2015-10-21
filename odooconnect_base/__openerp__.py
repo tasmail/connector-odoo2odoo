@@ -37,6 +37,8 @@
     'images': [],
     'demo': [],
     'data': [
+        'security/ir.model.access.csv',
+        'odooconnect_data.xml',
         'odoo_models_view.xml',
         'odooconnectmenu.xml',
         'partner_view.xml',

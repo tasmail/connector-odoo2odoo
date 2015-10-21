@@ -95,6 +95,30 @@ class OdooBackend(models.Model):
              'Leave empty to import all sale orders',
     )
 
+    @api.model
+    def _odoo_backend(self, callback, domain=None):
+        if domain is None:
+            domain = []
+        backends = self.search(domain)
+        if backends:
+            getattr(backends, callback)()
+
+    @api.model
+    def _scheduler_import_sale_orders(self, domain=None):
+        self._odoo_backend('import_sale_orders', domain=domain)
+
+    @api.model
+    def _scheduler_import_partners(self, domain=None):
+        self._odoo_backend('import_partners', domain=domain)
+
+    @api.model
+    def _scheduler_import_product_categories(self, domain=None):
+        self._odoo_backend('import_product_categories', domain=domain)
+
+    @api.model
+    def _scheduler_import_product_product(self, domain=None):
+        self._odoo_backend('import_product_product', domain=domain)
+
     @api.multi
     def import_partners(self):
         self._import_from_date(
