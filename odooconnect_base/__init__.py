@@ -10,3 +10,5 @@ from . import user
 from . import product
 from . import product_category
 from . import sale
+from . import product_uom
+from . import product_uom_category

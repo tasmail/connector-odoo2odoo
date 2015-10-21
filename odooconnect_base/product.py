@@ -132,7 +132,7 @@ class ProductImportMapper(ImportMapper):
               (normalize_datetime('write_date'), 'write_date'),
               (normalize_datetime('write_date'), 'write_date'),
               ('type', 'type'),
-              ('ean13', 'ean13')
+              ('ean13', 'ean13'),
               ]
 
     @mapping
@@ -147,6 +147,12 @@ class ProductImportMapper(ImportMapper):
 
         result = {'categ_id': main_cat_id}
         return result
+
+    @mapping
+    def uom_id(self, record):
+        binder = self.binder_for('odoo.porduct.uom')
+        uom_id = binder.to_openerp(record['uom_id'][0], unwrap=True)
+        return {'uom_id': uom_id}
 
     @mapping
     def backend_id(self, record):
@@ -164,6 +170,9 @@ class ProductImporter(OdooImporter):
         record = self.odoo_record
         self._import_dependency(record['categ_id'][0],
                                 'odoo.product.category')
+        self._import_dependency(
+            record['uom_id'][0],
+            'odoo.product.uom')
 
     def _create(self, data):
         openerp_binding = super(ProductImporter, self)._create(data)

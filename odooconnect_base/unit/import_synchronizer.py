@@ -270,6 +270,7 @@ class SimpleRecordImporter(OdooImporter):
     """ Import one external Odoo """
     _model_name = [
         'odoo.res.partner.category',
+        'odoo.product.uom.categ',
     ]
 
 

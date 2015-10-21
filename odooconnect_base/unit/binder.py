@@ -41,12 +41,14 @@ class OdooModelBinder(OdooBinder):
     """
     _model_name = [
         'odoo.res.partner',
-        'odoo.address',
         'odoo.res.users',
         'odoo.res.partner.category',
         'odoo.product.category',
         'odoo.product.product',
         'odoo.sale.order',
+        'odoo.product.uom',
+        'odoo.product.uom.categ',
+
     ]
 
     def to_openerp(self, external_id, unwrap=False, browse=False):
