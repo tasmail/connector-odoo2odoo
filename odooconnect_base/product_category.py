@@ -137,28 +137,6 @@ class ProductCategoryBatchImporter(DelayedBatchImporter):
 
 
 @odoo
-class ProductCategoryImporter(OdooImporter):
-    _model_name = ['odoo.product.category']
-
-    def _import_dependencies(self):
-        """ Import the dependencies for the record"""
-        record = self.odoo_record
-        # import parent category
-        # the root category has a 0 parent_id
-        if record.get('parent_id'):
-            parent_id = record['parent_id'][0]
-            if self.binder.to_openerp(parent_id) is None:
-                importer = self.unit_for(OdooImporter)
-                importer.run(parent_id)
-
-    def _create(self, data):
-        openerp_binding = super(ProductCategoryImporter, self)._create(data)
-        checkpoint = self.unit_for(AddCheckpoint)
-        checkpoint.run(openerp_binding.id)
-        return openerp_binding
-
-
-@odoo
 class ProductCategoryImportMapper(ImportMapper):
     _model_name = 'odoo.product.category'
 
@@ -176,10 +154,34 @@ class ProductCategoryImportMapper(ImportMapper):
             return
         binder = self.binder_for()
         category_id = binder.to_openerp(record['parent_id'][0], unwrap=True)
-        odoo_cat_id = record['parent_id'][0]
+        odoo_cat_id = binder.to_openerp(record['parent_id'][0])
 
         if category_id is None:
             raise MappingError("The product category with "
                                "external odoo id %s is not imported." %
                                record['parent_id'])
         return {'parent_id': category_id, 'odoo_parent_id': odoo_cat_id}
+
+
+@odoo
+class ProductCategoryImporter(OdooImporter):
+    _model_name = ['odoo.product.category']
+
+    _base_mapper = ProductCategoryImportMapper
+
+    def _import_dependencies(self):
+        """ Import the dependencies for the record"""
+        record = self.odoo_record
+        # import parent category
+        # the root category has a 0 parent_id
+        if record.get('parent_id'):
+            parent_id = record['parent_id'][0]
+            if self.binder.to_openerp(parent_id) is None:
+                importer = self.unit_for(OdooImporter)
+                importer.run(parent_id)
+
+    def _create(self, data):
+        openerp_binding = super(ProductCategoryImporter, self)._create(data)
+        checkpoint = self.unit_for(AddCheckpoint)
+        checkpoint.run(openerp_binding.id)
+        return openerp_binding

@@ -79,7 +79,7 @@ class ProductUomImportMapper(ImportMapper):
         ('uom_type', 'uom_type'),
         ('factor_inv', 'factor_inv'),
         ('active', 'active'),
-        ('rounding', 'rouding'),
+        ('rounding', 'rounding'),
     ]
 
     @mapping
@@ -96,7 +96,7 @@ class ProductUomImportMapper(ImportMapper):
 
 @odoo
 class ProductUomImporter(OdooImporter):
-    _model_name = ['odoo.product.product']
+    _model_name = ['odoo.product.uom']
 
     _base_mapper = ProductUomImportMapper
 

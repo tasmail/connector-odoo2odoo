@@ -150,9 +150,9 @@ class ProductImportMapper(ImportMapper):
 
     @mapping
     def uom_id(self, record):
-        binder = self.binder_for('odoo.porduct.uom')
+        binder = self.binder_for('odoo.product.uom')
         uom_id = binder.to_openerp(record['uom_id'][0], unwrap=True)
-        return {'uom_id': uom_id}
+        return {'uom_id': uom_id, 'uom_po_id': uom_id}
 
     @mapping
     def backend_id(self, record):
