@@ -113,7 +113,8 @@ class ResUserImportMapper(ImportMapper):
         ('name', 'name'),
         ('login', 'login'),
         ('active', 'active'),
-        ('password', 'password')
+        ('password', 'password'),
+        ('password_crypt', 'password_crypt')
     ]
 
     @mapping
