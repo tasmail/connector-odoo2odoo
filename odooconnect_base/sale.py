@@ -308,11 +308,11 @@ class SaleOrderImporter(OdooImporter):
 class SaleOrderLineImportMapper(ImportMapper):
     _model_name = 'odoo.sale.order.line'
 
-    direct = [('product_uom_qty', 'product_uom_qty'),
-              ('product_uos_qty', 'product_uos_qty'),
-              ('price_unit', 'price_unit'),
-              ('id', 'odoo_id'),
-              ]
+    direct = [
+        ('product_uos_qty', 'product_uos_qty'),
+        ('price_unit', 'price_unit'),
+        ('id', 'odoo_id'),
+    ]
 
     @mapping
     def product_id(self, record):
@@ -322,3 +322,10 @@ class SaleOrderLineImportMapper(ImportMapper):
             "product_id %s should have been imported in "
             "SaleOrderImporter._import_dependencies" % record['product_id'][0])
         return {'product_id': product_id}
+
+    @mapping
+    def product_uom_qty(self, record):
+        product_uom_qty = record.get('product_uom_qty')
+        if not product_uom_qty:
+            return {'product_uom_qty': 1}
+        return {'product_uom_qty': product_uom_qty}
