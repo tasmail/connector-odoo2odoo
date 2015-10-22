@@ -329,3 +329,11 @@ class SaleOrderLineImportMapper(ImportMapper):
         if not product_uom_qty:
             return {'product_uom_qty': 1}
         return {'product_uom_qty': product_uom_qty}
+
+    @mapping
+    def product_uom(self, record):
+        binder = self.binder_for('odoo.product.product')
+        binding_product_id = binder.to_openerp(
+            record['product_id'][0], unwrap=False)
+        product = binder.unwrap_binding(binding_product_id, browse=True)
+        return {'product_uom': product.uom_id.id}
